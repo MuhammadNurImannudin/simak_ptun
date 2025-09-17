@@ -1,0 +1,216 @@
+# =====================================================
+# SIMAK PTUN v2.0 - Crontab Configuration
+# Pengadilan Tata Usaha Negara Banjarmasin
+# 
+# To install:
+# 1. Copy this file to your server
+# 2. Edit paths to match your installation
+# 3. Install: crontab -e
+# 4. Add contents below to your crontab
+# 
+# To view current crontab: crontab -l
+# To edit crontab: crontab -e
+# To remove crontab: crontab -r
+# =====================================================
+
+# Environment variables for cron jobs
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=admin@ptun-banjarmasin.go.id
+
+# Application paths (ADJUST THESE TO YOUR INSTALLATION)
+APP_DIR=/var/www/simak-ptun
+PHP_BIN=/usr/bin/php
+MYSQL_BIN=/usr/bin/mysql
+
+# =====================================================
+# DAILY TASKS
+# =====================================================
+
+# Daily database backup (2:00 AM)
+0 2 * * * cd $APP_DIR && $PHP_BIN scripts/backup-database.php >> logs/backup.log 2>&1
+
+# Daily cleanup of temporary files (2:30 AM)
+30 2 * * * cd $APP_DIR && find temp/ -type f -mtime +1 -delete >> logs/cleanup.log 2>&1
+
+# Daily cleanup of old session files (3:00 AM)
+0 3 * * * find /tmp -name "sess_*" -type f -mtime +1 -delete 2>/dev/null
+
+# Daily log rotation and cleanup (3:30 AM)
+30 3 * * * cd $APP_DIR && $PHP_BIN scripts/cleanup-logs.php >> logs/maintenance.log 2>&1
+
+# Daily database optimization (4:00 AM)
+0 4 * * * cd $APP_DIR && $PHP_BIN scripts/optimize-database.php >> logs/optimization.log 2>&1
+
+# Daily system health check (5:00 AM)
+0 5 * * * cd $APP_DIR && $PHP_BIN scripts/health-check.php >> logs/health.log 2>&1
+
+# Daily notification cleanup (old notifications) (5:30 AM)
+30 5 * * * cd $APP_DIR && $PHP_BIN scripts/cleanup-notifications.php >> logs/cleanup.log 2>&1
+
+# =====================================================
+# WEEKLY TASKS
+# =====================================================
+
+# Weekly full backup (Sunday at 1:00 AM)
+0 1 * * 0 cd $APP_DIR && bash scripts/full-backup.sh >> logs/full-backup.log 2>&1
+
+# Weekly cleanup of old backups (Sunday at 6:00 AM)
+0 6 * * 0 cd $APP_DIR && find backups/ -name "*.gz" -type f -mtime +7 -delete >> logs/cleanup.log 2>&1
+
+# Weekly security scan (Sunday at 7:00 AM)
+0 7 * * 0 cd $APP_DIR && $PHP_BIN scripts/security-check.php >> logs/security.log 2>&1
+
+# Weekly performance report (Sunday at 8:00 AM)
+0 8 * * 0 cd $APP_DIR && $PHP_BIN scripts/performance-report.php >> logs/performance.log 2>&1
+
+# Weekly disk space check (Sunday at 9:00 AM)
+0 9 * * 0 df -h | mail -s "Weekly Disk Space Report - SIMAK PTUN" $MAILTO
+
+# =====================================================
+# MONTHLY TASKS
+# =====================================================
+
+# Monthly archive old activity logs (1st day of month at 2:00 AM)
+0 2 1 * * cd $APP_DIR && $PHP_BIN scripts/archive-logs.php >> logs/archive.log 2>&1
+
+# Monthly statistics report (1st day of month at 3:00 AM)
+0 3 1 * * cd $APP_DIR && $PHP_BIN scripts/monthly-report.php >> logs/reports.log 2>&1
+
+# Monthly system update check (1st day of month at 4:00 AM)
+0 4 1 * * cd $APP_DIR && $PHP_BIN scripts/update-check.php >> logs/updates.log 2>&1
+
+# Monthly cleanup of old uploaded files (orphaned files) (1st day at 5:00 AM)
+0 5 1 * * cd $APP_DIR && $PHP_BIN scripts/cleanup-orphaned-files.php >> logs/cleanup.log 2>&1
+
+# =====================================================
+# HOURLY TASKS
+# =====================================================
+
+# Process email queue (every hour)
+0 * * * * cd $APP_DIR && $PHP_BIN scripts/process-mail-queue.php >> logs/mail.log 2>&1
+
+# Check for urgent notifications (every hour during business hours)
+0 8-17 * * 1-5 cd $APP_DIR && $PHP_BIN scripts/check-urgent-notifications.php >> logs/notifications.log 2>&1
+
+# =====================================================
+# EVERY 30 MINUTES TASKS
+# =====================================================
+
+# Clean temporary upload files (every 30 minutes)
+*/30 * * * * cd $APP_DIR && find assets/uploads/temp/ -type f -mtime +0.02 -delete 2>/dev/null
+
+# =====================================================
+# EVERY 15 MINUTES TASKS
+# =====================================================
+
+# Update dashboard statistics cache (every 15 minutes during business hours)
+*/15 8-17 * * 1-5 cd $APP_DIR && $PHP_BIN scripts/update-stats-cache.php >> logs/cache.log 2>&1
+
+# =====================================================
+# SPECIAL SCHEDULE TASKS
+# =====================================================
+
+# Monday morning system status report (Monday at 8:00 AM)
+0 8 * * 1 cd $APP_DIR && $PHP_BIN scripts/monday-status-report.php | mail -s "Weekly SIMAK PTUN Status Report" $MAILTO
+
+# Friday evening backup verification (Friday at 6:00 PM)
+0 18 * * 5 cd $APP_DIR && $PHP_BIN scripts/verify-backups.php >> logs/backup-verification.log 2>&1
+
+# End of month report (last day of month at 11:00 PM)
+0 23 28-31 * * [ $(date -d tomorrow +\%d) -eq 1 ] && cd $APP_DIR && $PHP_BIN scripts/end-of-month-report.php >> logs/monthly-reports.log 2>&1
+
+# =====================================================
+# MAINTENANCE TASKS
+# =====================================================
+
+# Run automated maintenance script (daily at 2:15 AM)
+15 2 * * * cd $APP_DIR && bash scripts/maintenance.sh >> logs/maintenance.log 2>&1
+
+# Check and restart services if needed (every 4 hours)
+0 */4 * * * cd $APP_DIR && $PHP_BIN scripts/service-monitor.php >> logs/services.log 2>&1
+
+# Update file permissions (daily at 6:00 AM)
+0 6 * * * cd $APP_DIR && bash scripts/fix-permissions.sh >> logs/permissions.log 2>&1
+
+# =====================================================
+# NOTIFICATION TASKS
+# =====================================================
+
+# Send daily summary email (weekdays at 5:00 PM)
+0 17 * * 1-5 cd $APP_DIR && $PHP_BIN scripts/daily-summary.php >> logs/summaries.log 2>&1
+
+# Check for deadline reminders (weekdays at 9:00 AM)
+0 9 * * 1-5 cd $APP_DIR && $PHP_BIN scripts/deadline-reminders.php >> logs/reminders.log 2>&1
+
+# Send weekly admin digest (Sunday at 6:00 PM)
+0 18 * * 0 cd $APP_DIR && $PHP_BIN scripts/weekly-admin-digest.php >> logs/digests.log 2>&1
+
+# =====================================================
+# DEVELOPMENT/TESTING TASKS (Comment out in production)
+# =====================================================
+
+# Test cron jobs (every minute - for testing only)
+# * * * * * echo "Cron test at $(date)" >> /tmp/cron-test.log
+
+# Development database backup (every 4 hours - for development)
+# 0 */4 * * * cd $APP_DIR && $PHP_BIN scripts/dev-backup.php >> logs/dev-backup.log 2>&1
+
+# =====================================================
+# EMERGENCY TASKS (Uncomment when needed)
+# =====================================================
+
+# Emergency cleanup (uncomment when disk space is critically low)
+# */10 * * * * cd $APP_DIR && $PHP_BIN scripts/emergency-cleanup.php >> logs/emergency.log 2>&1
+
+# Emergency notification (uncomment for critical system monitoring)
+# */5 * * * * cd $APP_DIR && $PHP_BIN scripts/emergency-monitor.php >> logs/emergency.log 2>&1
+
+# =====================================================
+# CUSTOM TASKS (Add your custom tasks here)
+# =====================================================
+
+# Example: Custom report generation
+# 0 7 1 * * cd $APP_DIR && $PHP_BIN scripts/custom-report.php >> logs/custom.log 2>&1
+
+# Example: Integration with external system
+# 30 */6 * * * cd $APP_DIR && $PHP_BIN scripts/sync-external.php >> logs/sync.log 2>&1
+
+# =====================================================
+# NOTES AND BEST PRACTICES
+# =====================================================
+
+# 1. Always redirect output to log files for debugging
+# 2. Use absolute paths for all commands and files
+# 3. Test cron jobs manually before scheduling
+# 4. Monitor log files regularly for errors
+# 5. Set proper email notifications for failures
+# 6. Avoid running resource-intensive tasks during business hours
+# 7. Stagger backup tasks to avoid system overload
+# 8. Keep cron jobs simple and focused on single tasks
+# 9. Use locking mechanisms for long-running tasks
+# 10. Document any custom cron jobs added
+
+# =====================================================
+# CRON LOG LOCATIONS
+# =====================================================
+
+# System cron logs: /var/log/cron (CentOS/RHEL) or /var/log/syslog (Ubuntu/Debian)
+# Application logs: /var/www/simak-ptun/logs/
+# Mail logs: Check system mail logs for notification delivery status
+
+# =====================================================
+# TROUBLESHOOTING CRON ISSUES
+# =====================================================
+
+# 1. Check if cron service is running: systemctl status cron
+# 2. View cron logs: grep CRON /var/log/syslog
+# 3. Test cron job manually: run the command directly
+# 4. Check file permissions and paths
+# 5. Verify environment variables are set correctly
+# 6. Check for syntax errors in cron expression
+# 7. Ensure scripts are executable: chmod +x script.sh
+
+# =====================================================
+# END OF CRONTAB CONFIGURATION
+# =====================================================

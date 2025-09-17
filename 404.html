@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan | SIMAK PTUN</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .error-container {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .error-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .error-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        
+        .error-suggestions {
+            text-align: left;
+            margin-top: 1rem;
+        }
+        
+        .error-suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .error-suggestions li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .error-suggestions li:last-child {
+            border-bottom: none;
+        }
+        
+        .error-suggestions li i {
+            margin-right: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            
+            .error-title {
+                font-size: 2rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Halaman Tidak Ditemukan</h1>
+        <p class="error-message">
+            Maaf, halaman yang Anda cari tidak dapat ditemukan. 
+            Mungkin URL salah atau halaman telah dipindahkan.
+        </p>
+        
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                Kembali
+            </a>
+            <a href="index.php" class="btn btn-outline">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+        </div>
+        
+        <div class="error-info">
+            <h3>Apa yang bisa Anda lakukan?</h3>
+            <div class="error-suggestions">
+                <ul>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Periksa URL dan pastikan tidak ada kesalahan ketik
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Kembali ke halaman sebelumnya menggunakan tombol back browser
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Pergi ke dashboard untuk memulai navigasi yang baru
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Gunakan menu navigasi untuk mencari halaman yang diinginkan
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Hubungi administrator jika masalah terus berlanjut
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; opacity: 0.7;">
+            <small>
+                <i class="fas fa-building"></i>
+                SIMAK PTUN - Pengadilan Tata Usaha Negara Banjarmasin
+            </small>
+        </div>
+    </div>
+    
+    <script>
+        // Auto redirect to dashboard after 10 seconds
+        let countdown = 10;
+        const redirectTimer = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                window.location.href = 'index.php';
+                clearInterval(redirectTimer);
+            }
+        }, 1000);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === 'Backspace') {
+                history.back();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                window.location.href = 'index.php';
+            }
+        });
+        
+        // Add some interactivity
+        document.querySelector('.error-code').addEventListener('click', function() {
+            this.style.animation = 'pulse 0.5s';
+            setTimeout(() => {
+                this.style.animation = 'pulse 2s infinite';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

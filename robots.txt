@@ -1,0 +1,139 @@
+# robots.txt for SIMAK PTUN v2.0
+# Pengadilan Tata Usaha Negara Banjarmasin
+# Generated: 2024-01-15
+
+User-agent: *
+
+# Allow access to public pages
+Allow: /
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/images/
+Allow: /login
+Allow: /register
+
+# Block access to sensitive directories and files
+Disallow: /config/
+Disallow: /includes/
+Disallow: /sql/
+Disallow: /backups/
+Disallow: /logs/
+Disallow: /scripts/
+Disallow: /vendor/
+Disallow: /tests/
+Disallow: /temp/
+Disallow: /cache/
+
+# Block admin and API areas (require authentication)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /ajax/
+
+# Block user-specific areas
+Disallow: /pages/
+Disallow: /auth/logout
+Disallow: /auth/reset-password
+
+# Block file uploads directory for privacy
+Disallow: /assets/uploads/
+
+# Block database and configuration files
+Disallow: *.sql
+Disallow: *.db
+Disallow: *.log
+Disallow: *.bak
+Disallow: *.backup
+Disallow: *.old
+Disallow: *.tmp
+Disallow: *.temp
+
+# Block version control
+Disallow: /.git/
+Disallow: /.svn/
+Disallow: /.hg/
+
+# Block development files
+Disallow: /composer.json
+Disallow: /composer.lock
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /webpack.config.js
+Disallow: /gulpfile.js
+Disallow: /Gruntfile.js
+Disallow: /.env
+Disallow: /.env.*
+
+# Block documentation (internal use)
+Disallow: /docs/
+Disallow: /README.md
+Disallow: /CHANGELOG.md
+Disallow: /LICENSE
+
+# Block installer after installation
+Disallow: /install.php
+Disallow: /setup.php
+
+# Crawl delay (be nice to server)
+Crawl-delay: 1
+
+# Specific rules for different bots
+User-agent: Googlebot
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/images/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /pages/
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/images/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /pages/
+Crawl-delay: 2
+
+# Block aggressive bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MajesticSEO
+Disallow: /
+
+# Block social media bots from sensitive areas
+User-agent: facebookexternalhit
+Disallow: /admin/
+Disallow: /pages/
+Disallow: /api/
+
+User-agent: Twitterbot
+Disallow: /admin/
+Disallow: /pages/
+Disallow: /api/
+
+User-agent: LinkedInBot
+Disallow: /admin/
+Disallow: /pages/
+Disallow: /api/
+
+# Block download bots
+User-agent: *bot*
+Disallow: /assets/uploads/
+
+# Sitemap location (create sitemap.xml if needed)
+Sitemap: https://ptun-banjarmasin.go.id/sitemap.xml
+
+# Note: This is a government internal system
+# Public access is limited to login and basic information pages only
+# All functional areas require proper authentication and authorization

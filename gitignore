@@ -1,0 +1,367 @@
+# =====================================================
+# SIMAK PTUN v2.0 - Git Ignore Configuration
+# Pengadilan Tata Usaha Negara Banjarmasin
+# =====================================================
+
+# =====================================================
+# SENSITIVE CONFIGURATION FILES
+# =====================================================
+
+# Database configuration
+config/database.php
+config/installed.lock
+config/config.local.php
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Installation files (after installation)
+install.php
+setup.php
+
+# =====================================================
+# USER DATA & UPLOADS
+# =====================================================
+
+# User uploaded files
+assets/uploads/*
+!assets/uploads/.gitkeep
+
+# User profile photos
+assets/uploads/profiles/*
+!assets/uploads/profiles/.gitkeep
+
+# Document attachments
+assets/uploads/surat-masuk/*
+assets/uploads/surat-keluar/*
+!assets/uploads/surat-masuk/.gitkeep
+!assets/uploads/surat-keluar/.gitkeep
+
+# Temporary uploads
+assets/uploads/temp/*
+!assets/uploads/temp/.gitkeep
+
+# =====================================================
+# BACKUP & LOG FILES
+# =====================================================
+
+# Database backups
+backups/*
+!backups/.gitkeep
+*.sql
+*.sql.gz
+*.dump
+*.backup
+
+# Log files
+logs/*
+!logs/.gitkeep
+*.log
+error_log
+access_log
+
+# Cache files
+cache/*
+!cache/.gitkeep
+
+# Temporary files
+temp/*
+tmp/*
+!temp/.gitkeep
+!tmp/.gitkeep
+
+# =====================================================
+# DEPENDENCY MANAGEMENT
+# =====================================================
+
+# Composer
+vendor/
+composer.lock
+composer.phar
+
+# Node.js (if using build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =====================================================
+# DEVELOPMENT & BUILD FILES
+# =====================================================
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.buildpath
+*.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =====================================================
+# COMPILED & MINIFIED FILES
+# =====================================================
+
+# Minified CSS/JS (if auto-generated)
+assets/css/*.min.css
+assets/js/*.min.js
+assets/css/build/
+assets/js/build/
+
+# Compiled assets
+dist/
+build/
+public/build/
+
+# =====================================================
+# TESTING & COVERAGE
+# =====================================================
+
+# PHPUnit
+phpunit.xml
+.phpunit.result.cache
+coverage/
+coverage.xml
+clover.xml
+
+# Testing databases
+*.sqlite
+test.db
+testing.db
+
+# =====================================================
+# SECURITY & SENSITIVE DATA
+# =====================================================
+
+# Private keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Security files
+.htpasswd
+auth.json
+secrets.json
+
+# API keys and tokens
+api_keys.txt
+tokens.json
+
+# =====================================================
+# DOCUMENTATION (Generated)
+# =====================================================
+
+# Generated documentation
+docs/api/
+docs/generated/
+phpdoc/
+apidoc/
+
+# =====================================================
+# SERVER CONFIGURATION (Local)
+# =====================================================
+
+# Apache/Nginx local configs
+.htaccess.local
+nginx.local.conf
+apache.local.conf
+
+# PHP local configuration
+php.local.ini
+
+# =====================================================
+# APPLICATION SPECIFIC
+# =====================================================
+
+# Session files
+sessions/*
+!sessions/.gitkeep
+
+# Email queue (if implemented)
+mail/queue/*
+!mail/queue/.gitkeep
+
+# Export files (temporary)
+exports/*
+!exports/.gitkeep
+*.xlsx
+*.pdf
+*.csv
+*.zip
+
+# =====================================================
+# VERSION CONTROL
+# =====================================================
+
+# Git
+.git/
+*.patch
+*.diff
+
+# SVN
+.svn/
+
+# Mercurial
+.hg/
+
+# =====================================================
+# PERFORMANCE & OPTIMIZATION
+# =====================================================
+
+# OPcache files
+opcache/
+*.opcache
+
+# Asset optimization
+.sass-cache/
+*.css.map
+*.js.map
+
+# =====================================================
+# DOCKER (if using containers)
+# =====================================================
+
+# Docker
+Dockerfile.local
+docker-compose.local.yml
+docker-compose.override.yml
+.dockerignore
+
+# Docker volumes
+docker-data/
+
+# =====================================================
+# CI/CD & DEPLOYMENT
+# =====================================================
+
+# Deployment scripts (local)
+deploy.local.sh
+deploy-config.local.json
+
+# CI/CD logs
+.gitlab-ci-local.yml
+.github/workflows/local.yml
+
+# =====================================================
+# MAINTENANCE & MONITORING
+# =====================================================
+
+# Maintenance files
+maintenance.local.html
+maintenance-config.local.json
+
+# Monitoring data
+monitoring/
+metrics/
+*.pid
+
+# =====================================================
+# CUSTOM APPLICATION FILES
+# =====================================================
+
+# Custom user modifications
+custom/
+local/
+user-custom/
+
+# Site-specific configurations  
+config/site-specific/
+config/local/
+
+# User preferences
+preferences.json
+user-settings.json
+
+# =====================================================
+# ARCHIVE & LEGACY
+# =====================================================
+
+# Old versions
+*.old
+*.bak
+*.backup
+archive/
+legacy/
+
+# Migration files (completed)
+migrations/completed/
+
+# =====================================================
+# SPECIAL CASES
+# =====================================================
+
+# Large files (should use Git LFS)
+*.iso
+*.dmg
+*.exe
+*.msi
+*.deb
+*.rpm
+
+# Media files (if not needed in repo)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+*.mp3
+*.wav
+*.ogg
+*.aac
+
+# =====================================================
+# KEEP THESE FILES (Negative patterns)
+# =====================================================
+
+# Keep essential empty directories
+!assets/uploads/.gitkeep
+!backups/.gitkeep
+!logs/.gitkeep
+!temp/.gitkeep
+!cache/.gitkeep
+
+# Keep sample configuration files
+!config/config.example.php
+!config/database.example.php
+
+# Keep documentation templates
+!docs/templates/
+
+# Keep essential assets
+!assets/css/style.css
+!assets/js/app.js
+!assets/images/logo/
+
+# =====================================================
+# END OF GITIGNORE
+# =====================================================
+
+# Note: This gitignore is designed for SIMAK PTUN v2.0
+# Adjust paths and patterns according to your specific setup
+# Remember to never commit sensitive information like:
+# - Database passwords
+# - API keys  
+# - User data
+# - System logs
+# - Backup files

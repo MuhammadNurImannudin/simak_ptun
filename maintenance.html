@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - SIMAK PTUN</title>
+    <meta name="description" content="SIMAK PTUN sedang dalam maintenance untuk peningkatan layanan">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="assets/images/logo/favicon.ico" type="image/x-icon">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .maintenance-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 90%;
+            margin: 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #4f46e5;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        
+        .message {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #475569;
+        }
+        
+        .message h3 {
+            color: #334155;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .countdown {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .countdown-item {
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .countdown-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .progress-bar {
+            background: #e2e8f0;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            border-radius: 3px;
+            width: 0%;
+            animation: loading 10s ease-in-out infinite;
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 75%; }
+            100% { width: 0%; }
+        }
+        
+        .contact-info {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: #92400e;
+        }
+        
+        .contact-info strong {
+            color: #78350f;
+        }
+        
+        .social-links {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid #fecaca;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #dc2626;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .feature-list {
+            text-align: left;
+            margin: 1.5rem 0;
+            color: #475569;
+        }
+        
+        .feature-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: #4f46e5;
+        }
+        
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+        
+        .refresh-btn:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+        
+        .last-updated {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 640px) {
+            .maintenance-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .countdown {
+                padding: 1rem;
+            }
+            
+            .countdown-number {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Auto refresh animation */
+        .auto-refresh {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(79, 70, 229, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(-10px); }
+            50% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-container">
+        <div class="logo">SP</div>
+        
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            Sistem sedang maintenance
+        </div>
+        
+        <h1>SIMAK PTUN</h1>
+        <div class="subtitle">Sistem dalam Pemeliharaan</div>
+        
+        <div class="message">
+            <h3>🔧 Peningkatan Sistem Sedang Berlangsung</h3>
+            <p>Kami sedang melakukan pemeliharaan terjadwal untuk meningkatkan performa dan keamanan sistem SIMAK PTUN. Mohon maaf atas ketidaknyamanan ini.</p>
+        </div>
+        
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">02</span>
+                <span class="countdown-label">Jam</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">30</span>
+                <span class="countdown-label">Menit</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">00</span>
+                <span class="countdown-label">Detik</span>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div class="message">
+            <h3>✨ Yang Sedang Kami Tingkatkan:</h3>
+            <div class="feature-list">
+                <ul>
+                    <li>Optimasi performa database</li>
+                    <li>Update keamanan sistem</li>
+                    <li>Peningkatan interface pengguna</li>
+                    <li>Backup dan verifikasi data</li>
+                    <li>Testing fitur-fitur baru</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="contact-info">
+            <strong>Butuh bantuan urgent?</strong><br>
+            Hubungi Tim IT: <strong>(0511) 3252989</strong><br>
+            Email: <strong>admin@ptun-banjarmasin.go.id</strong>
+        </div>
+        
+        <a href="javascript:location.reload();" class="refresh-btn">
+            🔄 Refresh Halaman
+        </a>
+        
+        <div class="social-links">
+            <a href="#" class="social-link" title="Website Resmi">🌐</a>
+            <a href="#" class="social-link" title="Facebook">📘</a>
+            <a href="#" class="social-link" title="Twitter">🐦</a>
+            <a href="#" class="social-link" title="Instagram">📷</a>
+        </div>
+        
+        <div class="last-updated">
+            Terakhir diperbarui: <span id="lastUpdated">17 September 2025, 15:30 WIB</span>
+        </div>
+    </div>
+    
+    <div class="auto-refresh">Auto refresh dalam <span id="autoRefresh">60</span>s</div>
+    
+    <script>
+        // Countdown timer (estimated maintenance end time)
+        function updateCountdown() {
+            // Set maintenance end time (adjust as needed)
+            const now = new Date().getTime();
+            const maintenanceEnd = now + (2.5 * 60 * 60 * 1000); // 2.5 hours from now
+            
+            const distance = maintenanceEnd - new Date().getTime();
+            
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = '<div style="color: #10b981; font-size: 1.2rem;">🎉 Maintenance selesai! Silakan refresh halaman.</div>';
+            }
+        }
+        
+        // Auto refresh countdown
+        let refreshTimer = 60;
+        function updateRefreshTimer() {
+            document.getElementById('autoRefresh').textContent = refreshTimer;
+            refreshTimer--;
+            
+            if (refreshTimer < 0) {
+                location.reload();
+            }
+        }
+        
+        // Update last updated time
+        function updateLastUpdated() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                timeZone: 'Asia/Jakarta'
+            };
+            document.getElementById('lastUpdated').textContent = now.toLocaleDateString('id-ID', options) + ' WIB';
+        }
+        
+        // Initialize timers
+        updateCountdown();
+        updateLastUpdated();
+        
+        // Set intervals
+        setInterval(updateCountdown, 1000);
+        setInterval(updateRefreshTimer, 1000);
+        
+        // Random motivational messages
+        const messages = [
+            "Sistem akan segera kembali lebih baik! 🚀",
+            "Terima kasih atas kesabaran Anda 🙏",
+            "Upgrade sedang berlangsung... 💪",
+            "Hampir selesai! Mohon tunggu sebentar lagi ⏰"
+        ];
+        
+        setInterval(() => {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.title = randomMessage + " - SIMAK PTUN";
+        }, 5000);
+        
+        // Easter egg - konami code
+        let konamiCode = '';
+        document.addEventListener('keydown', (e) => {
+            konamiCode += e.key;
+            if (konamiCode.includes('ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba')) {
+                document.body.style.transform = 'rotate(360deg)';
+                document.body.style.transition = 'transform 2s ease-in-out';
+                setTimeout(() => {
+                    document.body.style.transform = '';
+                    alert('🎉 Easter Egg Found! SIMAK PTUN Tim IT says Hi!');
+                }, 2000);
+                konamiCode = '';
+            }
+            if (konamiCode.length > 50) konamiCode = '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{
+    "name": "ptun-banjarmasin/simak-ptun",
+    "description": "Sistem Informasi Manajemen Arsip dan Korespondensi - Pengadilan Tata Usaha Negara Banjarmasin",
+    "type": "project",
+    "version": "2.0.0",
+    "keywords": [
+        "archive",
+        "correspondence", 
+        "management",
+        "ptun",
+        "government",
+        "document-management",
+        "php",
+        "mysql"
+    ],
+    "homepage": "https://ptun-banjarmasin.go.id",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IT Team PTUN Banjarmasin",
+            "email": "admin@ptun-banjarmasin.go.id",
+            "homepage": "https://ptun-banjarmasin.go.id",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "admin@ptun-banjarmasin.go.id",
+        "issues": "https://github.com/ptun-banjarmasin/simak-ptun/issues",
+        "source": "https://github.com/ptun-banjarmasin/simak-ptun",
+        "docs": "https://docs.simak-ptun.com"
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-fileinfo": "*",
+        "ext-zip": "*",
+        "ext-gd": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpmd/phpmd": "^2.10",
+        "phpstan/phpstan": "^1.0",
+        "friendsofphp/php-cs-fixer": "^3.0"
+    },
+    "suggest": {
+        "ext-imagick": "For advanced image processing",
+        "ext-curl": "For external API integrations",
+        "ext-intl": "For internationalization support",
+        "phpmailer/phpmailer": "For advanced email functionality",
+        "dompdf/dompdf": "For PDF generation",
+        "phpoffice/phpspreadsheet": "For Excel file handling",
+        "monolog/monolog": "For advanced logging",
+        "symfony/console": "For command line tools"
+    },
+    "autoload": {
+        "psr-4": {
+            "SimakPTUN\\": "src/",
+            "SimakPTUN\\Config\\": "config/",
+            "SimakPTUN\\Controllers\\": "src/Controllers/",
+            "SimakPTUN\\Models\\": "src/Models/",
+            "SimakPTUN\\Views\\": "src/Views/",
+            "SimakPTUN\\Helpers\\": "src/Helpers/",
+            "SimakPTUN\\Middleware\\": "src/Middleware/"
+        },
+        "files": [
+            "includes/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SimakPTUN\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "install-deps": [
+            "composer install --optimize-autoloader"
+        ],
+        "setup": [
+            "@install-deps",
+            "php scripts/setup.php"
+        ],
+        "test": [
+            "vendor/bin/phpunit"
+        ],
+        "test-coverage": [
+            "vendor/bin/phpunit --coverage-html coverage"
+        ],
+        "lint": [
+            "vendor/bin/phpcs --standard=PSR12 --extensions=php src/ includes/ pages/"
+        ],
+        "lint-fix": [
+            "vendor/bin/phpcbf --standard=PSR12 --extensions=php src/ includes/ pages/"
+        ],
+        "analyze": [
+            "vendor/bin/phpstan analyse src/ includes/ --level=5"
+        ],
+        "check-style": [
+            "vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "fix-style": [
+            "vendor/bin/php-cs-fixer fix"
+        ],
+        "security-check": [
+            "php scripts/security-check.php"
+        ],
+        "backup": [
+            "php scripts/backup.php"
+        ],
+        "optimize": [
+            "composer dump-autoload --optimize",
+            "php scripts/optimize-db.php",
+            "php scripts/cache-clear.php"
+        ],
+        "deploy": [
+            "@optimize",
+            "php scripts/deploy.php"
+        ],
+        "post-install-cmd": [
+            "php scripts/post-install.php"
+        ],
+        "post-update-cmd": [
+            "php scripts/post-update.php"
+        ]
+    },
+    "scripts-descriptions": {
+        "install-deps": "Install all dependencies with optimization",
+        "setup": "Setup the application after installation",
+        "test": "Run all unit tests",
+        "test-coverage": "Run tests with coverage report",
+        "lint": "Check code style using PHP CodeSniffer",
+        "lint-fix": "Fix code style issues automatically",
+        "analyze": "Perform static code analysis with PHPStan",
+        "check-style": "Check code formatting with PHP CS Fixer",
+        "fix-style": "Fix code formatting issues",
+        "security-check": "Run security vulnerability checks",
+        "backup": "Create application and database backup",
+        "optimize": "Optimize application for production",
+        "deploy": "Deploy application to production"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        },
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "archive": {
+        "exclude": [
+            "/tests",
+            "/docs",
+            "/.github",
+            "/.git",
+            "/coverage",
+            "phpunit.xml",
+            ".phpcs.xml",
+            ".phpmd.xml",
+            ".phpstan.neon",
+            ".php_cs",
+            "README.md",
+            "CHANGELOG.md"
+        ]
+    },
+    "extra": {
+        "application": {
+            "name": "SIMAK PTUN",
+            "version": "2.0.0",
+            "description": "Sistem Informasi Manajemen Arsip dan Korespondensi",
+            "author": "PTUN Banjarmasin",
+            "website": "https://ptun-banjarmasin.go.id"
+        },
+        "requirements": {
+            "php-version": ">=7.4",
+            "mysql-version": ">=5.7",
+            "web-server": "Apache 2.4+ or Nginx 1.18+",
+            "memory-limit": ">=512M",
+            "max-execution-time": ">=300",
+            "upload-max-filesize": ">=50M",
+            "post-max-size": ">=50M"
+        },
+        "features": {
+            "surat-masuk": "Manajemen surat masuk dengan disposisi",
+            "surat-keluar": "Manajemen surat keluar dengan template",
+            "user-management": "Role-based user management",
+            "advanced-search": "Full-text search dengan multiple filters",
+            "reporting": "Export laporan ke Excel, PDF, CSV",
+            "backup": "Automated backup dan restore",
+            "api": "RESTful API untuk integrasi",
+            "security": "Enterprise-grade security features"
+        }
+    }
+}

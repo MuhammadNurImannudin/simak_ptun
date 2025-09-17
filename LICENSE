@@ -1,0 +1,84 @@
+MIT License
+
+Copyright (c) 2024 Pengadilan Tata Usaha Negara Banjarmasin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL TERMS FOR GOVERNMENT USE:
+
+This software was developed for use by Pengadilan Tata Usaha Negara Banjarmasin
+and other Indonesian government institutions. While the MIT license allows
+commercial use, the developers encourage use primarily for:
+
+1. Government and public sector applications
+2. Educational and non-profit purposes  
+3. Open source projects that benefit the public
+
+ATTRIBUTION:
+
+When using this software, please include appropriate attribution:
+- "Powered by SIMAK PTUN v2.0"
+- "Developed by IT Team PTUN Banjarmasin"
+- Link to: https://ptun-banjarmasin.go.id
+
+SUPPORT:
+
+For support, bug reports, and feature requests:
+- Email: admin@ptun-banjarmasin.go.id
+- GitHub: https://github.com/ptun-banjarmasin/simak-ptun
+- Website: https://ptun-banjarmasin.go.id
+
+CONTRIBUTION:
+
+We welcome contributions from developers who want to improve government
+digital services in Indonesia. Please see CONTRIBUTING.md for guidelines.
+
+---
+
+DISCLAIMER:
+
+This software is provided by Pengadilan Tata Usaha Negara Banjarmasin
+for use in legal and administrative processes. Users are responsible for
+ensuring compliance with applicable laws and regulations in their jurisdiction.
+
+The developers make no warranties regarding the legal validity of documents
+processed through this system and users should verify all legal requirements
+with qualified legal professionals.
+
+---
+
+LIBRARIES AND DEPENDENCIES:
+
+This software may include or depend on third-party libraries and frameworks
+that are licensed under their own terms:
+
+- PHP: PHP License
+- MySQL: GPL License  
+- Bootstrap: MIT License
+- jQuery: MIT License
+- Chart.js: MIT License
+- Font Awesome: Font Awesome Free License
+
+Users are responsible for complying with all applicable third-party licenses.
+
+---
+
+© 2024 Pengadilan Tata Usaha Negara Banjarmasin. All rights reserved.

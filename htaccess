@@ -1,0 +1,316 @@
+# =====================================================
+# SIMAK PTUN v2.0 - Apache Configuration
+# Pengadilan Tata Usaha Negara Banjarmasin
+# =====================================================
+
+# Enable RewriteEngine
+RewriteEngine On
+RewriteBase /
+
+# =====================================================
+# SECURITY CONFIGURATIONS
+# =====================================================
+
+# Disable directory browsing
+Options -Indexes
+
+# Disable server signature
+ServerSignature Off
+
+# Hide Apache version
+Header unset Server
+Header always unset X-Powered-By
+
+# Prevent access to sensitive files and directories
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sql|bak|backup|old|tmp|temp)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protect configuration directories
+RedirectMatch 403 ^/config/
+RedirectMatch 403 ^/includes/
+RedirectMatch 403 ^/sql/
+RedirectMatch 403 ^/backups/
+RedirectMatch 403 ^/logs/
+RedirectMatch 403 ^/docs/
+RedirectMatch 403 ^/scripts/
+RedirectMatch 403 ^/vendor/
+
+# Block access to composer files
+<FilesMatch "^(composer\.(json|lock)|\.env|\.git)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# =====================================================
+# SECURITY HEADERS
+# =====================================================
+
+# Prevent MIME type sniffing
+Header always set X-Content-Type-Options nosniff
+
+# Prevent framing attacks
+Header always set X-Frame-Options DENY
+
+# XSS Protection
+Header always set X-XSS-Protection "1; mode=block"
+
+# Content Security Policy
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self';"
+
+# Strict Transport Security (uncomment for HTTPS)
+# Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+# Referrer Policy
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+# Permissions Policy
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
+
+# =====================================================
+# URL REWRITING & CLEAN URLS
+# =====================================================
+
+# Remove trailing slash from directories (except root)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^(.+)/$ $1 [R=301,L]
+
+# Authentication Routes
+RewriteRule ^login/?$ auth/login.php [L,QSA]
+RewriteRule ^logout/?$ auth/logout.php [L,QSA]
+RewriteRule ^register/?$ auth/register.php [L,QSA]
+RewriteRule ^forgot-password/?$ auth/forgot-password.php [L,QSA]
+
+# Dashboard Routes
+RewriteRule ^dashboard/?$ index.php [L,QSA]
+RewriteRule ^home/?$ index.php [L,QSA]
+
+# Surat Management Routes
+RewriteRule ^surat-masuk/?$ pages/surat-masuk/index.php [L,QSA]
+RewriteRule ^surat-masuk/add/?$ pages/surat-masuk/add.php [L,QSA]
+RewriteRule ^surat-masuk/edit/([0-9]+)/?$ pages/surat-masuk/edit.php?id=$1 [L,QSA]
+RewriteRule ^surat-masuk/view/([0-9]+)/?$ pages/surat-masuk/view.php?id=$1 [L,QSA]
+RewriteRule ^surat-masuk/print/([0-9]+)/?$ pages/surat-masuk/print.php?id=$1 [L,QSA]
+
+RewriteRule ^surat-keluar/?$ pages/surat-keluar/index.php [L,QSA]
+RewriteRule ^surat-keluar/add/?$ pages/surat-keluar/add.php [L,QSA]
+RewriteRule ^surat-keluar/edit/([0-9]+)/?$ pages/surat-keluar/edit.php?id=$1 [L,QSA]
+RewriteRule ^surat-keluar/view/([0-9]+)/?$ pages/surat-keluar/view.php?id=$1 [L,QSA]
+RewriteRule ^surat-keluar/print/([0-9]+)/?$ pages/surat-keluar/print.php?id=$1 [L,QSA]
+
+# User Management Routes
+RewriteRule ^users/?$ pages/users/index.php [L,QSA]
+RewriteRule ^users/add/?$ pages/users/add.php [L,QSA]
+RewriteRule ^users/edit/([0-9]+)/?$ pages/users/edit.php?id=$1 [L,QSA]
+RewriteRule ^users/profile/?$ pages/users/profile.php [L,QSA]
+
+# Search Routes
+RewriteRule ^search/?$ pages/search/index.php [L,QSA]
+RewriteRule ^search/advanced/?$ pages/search/advanced.php [L,QSA]
+RewriteRule ^search/results/?$ pages/search/results.php [L,QSA]
+
+# Reports Routes
+RewriteRule ^reports/?$ pages/reports/index.php [L,QSA]
+RewriteRule ^reports/monthly/?$ pages/reports/monthly.php [L,QSA]
+RewriteRule ^reports/yearly/?$ pages/reports/yearly.php [L,QSA]
+RewriteRule ^reports/export-excel/?$ pages/reports/export-excel.php [L,QSA]
+RewriteRule ^reports/export-pdf/?$ pages/reports/export-pdf.php [L,QSA]
+
+# Admin Routes
+RewriteRule ^admin/?$ pages/admin/dashboard.php [L,QSA]
+RewriteRule ^admin/settings/?$ pages/admin/settings.php [L,QSA]
+RewriteRule ^admin/backup/?$ pages/admin/backup.php [L,QSA]
+RewriteRule ^admin/logs/?$ pages/admin/logs.php [L,QSA]
+RewriteRule ^admin/users/?$ pages/admin/users.php [L,QSA]
+RewriteRule ^admin/maintenance/?$ pages/admin/maintenance.php [L,QSA]
+
+# API Routes
+RewriteRule ^api/(.*)$ api/index.php?request=$1 [L,QSA]
+
+# AJAX Routes
+RewriteRule ^ajax/(.*)$ ajax/$1 [L,QSA]
+
+# =====================================================
+# FILE CACHING & COMPRESSION
+# =====================================================
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    
+    # Handle browser-specific compression issues
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/ico "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # Documents
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/msword "access plus 1 month"
+    ExpiresByType application/vnd.ms-excel "access plus 1 month"
+    
+    # HTML, PHP (no cache for dynamic content)
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/x-httpd-php "access plus 0 seconds"
+</IfModule>
+
+# Cache Control Headers
+<IfModule mod_headers.c>
+    # Cache static assets for 1 month
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+    
+    # No cache for dynamic content
+    <FilesMatch "\.(php|html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# =====================================================
+# FILE UPLOAD SECURITY
+# =====================================================
+
+# Prevent execution of uploaded files
+<Directory "assets/uploads/">
+    <FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|aspx|cgi|sh)$">
+        Order Allow,Deny
+        Deny from all
+    </FilesMatch>
+    
+    # Only allow specific file types
+    <FilesMatch "\.(jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|txt)$">
+        Order Deny,Allow
+        Allow from all
+    </FilesMatch>
+</Directory>
+
+# =====================================================
+# ERROR PAGES
+# =====================================================
+
+# Custom error pages
+ErrorDocument 400 /400.html
+ErrorDocument 401 /401.html
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+ErrorDocument 503 /503.html
+
+# =====================================================
+# IP BLOCKING (Optional - for specific IPs)
+# =====================================================
+
+# Block specific IPs (uncomment and add IPs as needed)
+# <Limit GET POST>
+#     order allow,deny
+#     deny from 192.168.1.100
+#     deny from 10.0.0.50
+#     allow from all
+# </Limit>
+
+# Allow only specific IPs (uncomment for high security)
+# <Limit GET POST>
+#     order deny,allow
+#     deny from all
+#     allow from 192.168.1.0/24
+#     allow from 10.0.0.0/8
+#     allow from 127.0.0.1
+# </Limit>
+
+# =====================================================
+# RATE LIMITING (Optional - requires mod_limitipconn)
+# =====================================================
+
+# <IfModule mod_limitipconn.c>
+#     # Limit connections per IP
+#     <Location />
+#         MaxConnPerIP 10
+#         NoIPLimit image/gif image/jpeg image/png text/css application/javascript
+#     </Location>
+# </IfModule>
+
+# =====================================================
+# HOTLINK PROTECTION
+# =====================================================
+
+# Prevent hotlinking of images (uncomment to enable)
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^https?://(www\.)?yourdomain\.com [NC]
+# RewriteCond %{REQUEST_FILENAME} \.(jpe?g|png|gif|svg|webp)$ [NC]
+# RewriteRule ^(.*)$ - [F,L]
+
+# =====================================================
+# MAINTENANCE MODE
+# =====================================================
+
+# Uncomment to enable maintenance mode
+# RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1
+# RewriteCond %{REMOTE_ADDR} !^192\.168\.1\. 
+# RewriteCond %{REQUEST_URI} !/maintenance.html$
+# RewriteRule ^(.*)$ /maintenance.html [R=302,L]
+
+# =====================================================
+# FORCE HTTPS (Uncomment for SSL sites)
+# =====================================================
+
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# =====================================================
+# GZIP COMPRESSION (Alternative method)
+# =====================================================
+
+<IfModule mod_gzip.c>
+    mod_gzip_on Yes
+    mod_gzip_dechunk Yes
+    mod_gzip_item_include file \.(html?|txt|css|js|php|pl)$
+    mod_gzip_item_include handler ^cgi-script$
+    mod_gzip_item_include mime ^text/.*
+    mod_gzip_item_include mime ^application/x-javascript.*
+    mod_gzip_item_exclude mime ^image/.*
+    mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</IfModule>
+
+# =====================================================
+# END OF CONFIGURATION
+# =====================================================
