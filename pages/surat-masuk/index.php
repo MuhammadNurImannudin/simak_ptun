@@ -1,23 +1,16 @@
 <?php
-// pages/surat-masuk/index.php - CLEAN VERSION
+// pages/surat-masuk/index.php - Professional Design
 require_once '../../config/config.php';
 require_once '../../includes/functions.php';
 
-// Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Simple login check
 if (!isLoggedIn()) {
     header('Location: ../../auth/login.php');
     exit();
 }
-
-// Initialize variables
-$surat_masuk = [];
-$total_records = 0;
-$total_pages = 1;
 
 // Check database availability
 $db_available = false;
@@ -26,23 +19,17 @@ try {
     $db_available = ($test_result !== null);
 } catch (Exception $e) {
     $db_available = false;
-    $db_error = $e->getMessage();
 }
 
-// Handle actions only if database is available
+// Handle actions if database available
 if ($db_available) {
     // Handle delete action
     if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
         $id = (int)$_GET['id'];
-        
         try {
-            // Get file info before delete
             $surat = fetchSingle("SELECT file_surat FROM surat_masuk WHERE id = ?", [$id]);
-            
-            // Delete from database
             executeQuery("DELETE FROM surat_masuk WHERE id = ?", [$id]);
             
-            // Delete file if exists
             if ($surat && isset($surat['file_surat']) && $surat['file_surat'] && file_exists(UPLOAD_PATH . $surat['file_surat'])) {
                 unlink(UPLOAD_PATH . $surat['file_surat']);
             }
@@ -51,7 +38,6 @@ if ($db_available) {
         } catch (Exception $e) {
             setFlashMessage('danger', 'Gagal menghapus surat masuk: ' . $e->getMessage());
         }
-        
         redirect('index.php');
     }
 
@@ -68,10 +54,13 @@ if ($db_available) {
                 setFlashMessage('danger', 'Gagal memperbarui status: ' . $e->getMessage());
             }
         }
-        
         redirect('index.php');
     }
 }
+
+// Initialize variables
+$surat_masuk = [];
+$total_records = 0;
 
 // Sample data if database not available
 if (!$db_available) {
@@ -81,8 +70,8 @@ if (!$db_available) {
             'nomor_surat' => '001/SM/2024',
             'tanggal_surat' => '2024-09-15',
             'tanggal_diterima' => '2024-09-15',
-            'pengirim' => 'Dinas Pendidikan',
-            'perihal' => 'Permohonan Data Sekolah',
+            'pengirim' => 'Dinas Pendidikan Kalimantan Selatan',
+            'perihal' => 'Permohonan Data Sekolah dan Lembaga Pendidikan',
             'status' => 'pending',
             'file_surat' => '',
             'input_by' => 'Administrator'
@@ -93,10 +82,10 @@ if (!$db_available) {
             'tanggal_surat' => '2024-09-14',
             'tanggal_diterima' => '2024-09-14',
             'pengirim' => 'Kementerian Dalam Negeri',
-            'perihal' => 'Laporan Kinerja Triwulan',
+            'perihal' => 'Laporan Kinerja Triwulan III Tahun 2024',
             'status' => 'diproses',
-            'file_surat' => '',
-            'input_by' => 'Administrator'
+            'file_surat' => 'sample.pdf',
+            'input_by' => 'Staff TU'
         ],
         [
             'id' => 3,
@@ -104,13 +93,24 @@ if (!$db_available) {
             'tanggal_surat' => '2024-09-13',
             'tanggal_diterima' => '2024-09-13',
             'pengirim' => 'Pemkot Banjarmasin',
-            'perihal' => 'Koordinasi Pelaksanaan Program',
+            'perihal' => 'Koordinasi Pelaksanaan Program Pemerintahan',
             'status' => 'selesai',
-            'file_surat' => '',
-            'input_by' => 'Administrator'
+            'file_surat' => 'surat3.pdf',
+            'input_by' => 'Kasubbag'
+        ],
+        [
+            'id' => 4,
+            'nomor_surat' => '004/SM/2024',
+            'tanggal_surat' => '2024-09-12',
+            'tanggal_diterima' => '2024-09-12',
+            'pengirim' => 'Mahkamah Agung RI',
+            'perihal' => 'Petunjuk Teknis Administrasi Perkara',
+            'status' => 'diproses',
+            'file_surat' => 'ma-juknis.pdf',
+            'input_by' => 'Panitera'
         ]
     ];
-    $total_records = 3;
+    $total_records = 4;
 } else {
     // Get data from database
     $page = (int)($_GET['page'] ?? 1);
@@ -147,12 +147,9 @@ if (!$db_available) {
     $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
     try {
-        // Get total count
         $count_result = fetchSingle("SELECT COUNT(*) as total FROM surat_masuk sm $where_clause", $params);
         $total_records = $count_result ? $count_result['total'] : 0;
-        $total_pages = ceil($total_records / $limit);
 
-        // Get data - simplified query for compatibility
         $sql = "SELECT sm.*, 'Administrator' as input_by 
                 FROM surat_masuk sm 
                 $where_clause 
@@ -167,7 +164,6 @@ if (!$db_available) {
     }
 }
 
-// Get flash message
 $flash = getFlashMessage();
 ?>
 
@@ -177,98 +173,224 @@ $flash = getFlashMessage();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surat Masuk - SIMAK PTUN</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #4f46e5;
-            --bg-color: #f8fafc;
-            --text-primary: #1e293b;
-            --text-light: #64748b;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --primary-dark: #4338ca;
+            --secondary-color: #6366f1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-width: 260px;
+            --header-height: 80px;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            font-size: 14px;
         }
 
+        /* Sidebar Styles */
         .sidebar {
-            height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
-            background: var(--card-bg);
-            border-right: 1px solid var(--border-color);
-            padding: 1rem;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
             z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
         }
 
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            border-radius: 0;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            position: relative;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: white;
+        }
+
+        .nav-link i {
+            width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* Main Content */
         .main-content {
-            margin-left: 250px;
-            padding: 2rem;
+            margin-left: var(--sidebar-width);
             min-height: 100vh;
         }
 
-        .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-lg);
+        /* Header */
+        .header {
+            background: white;
+            padding: 0 2rem;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
         }
 
-        .page-title {
-            font-size: 2rem;
+        .header-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+            margin: 0;
         }
 
+        .header-subtitle {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 2rem;
+        }
+
+        /* Cards */
         .card {
-            background: var(--card-bg);
-            border: none;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
             overflow: hidden;
+            margin-bottom: 1.5rem;
         }
 
         .card-header {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .card-body {
             padding: 1.5rem;
-            font-weight: 600;
         }
 
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-        }
-
+        /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: var(--card-bg);
-            border-radius: 16px;
+            background: white;
+            border-radius: var(--border-radius);
             padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow-lg);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
 
         .stat-card::before {
@@ -277,430 +399,573 @@ $flash = getFlashMessage();
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
         }
 
-        .stat-card.primary::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
-        .stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
-        .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
-        .stat-card.info::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .stat-card.primary::before { background: var(--primary-color); }
+        .stat-card.success::before { background: var(--success-color); }
+        .stat-card.warning::before { background: var(--warning-color); }
+        .stat-card.info::before { background: var(--info-color); }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            position: relative;
-        }
-
-        .stat-icon.primary { 
-            background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
-            color: #6366f1;
-        }
-        .stat-icon.success { 
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            color: #10b981;
-        }
-        .stat-icon.warning { 
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #f59e0b;
-        }
-        .stat-icon.info { 
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            color: #3b82f6;
-        }
-
-        .stat-content h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(135deg, #1e293b, #475569);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-link {
-            color: var(--text-primary);
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color), #6366f1);
+            font-size: 1.25rem;
             color: white;
-            transform: translateX(5px);
         }
 
-        .table {
-            border-radius: 12px;
+        .stat-icon.primary { background: var(--primary-color); }
+        .stat-icon.success { background: var(--success-color); }
+        .stat-icon.warning { background: var(--warning-color); }
+        .stat-icon.info { background: var(--info-color); }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
             overflow: hidden;
         }
 
+        .table {
+            margin: 0;
+        }
+
         .table thead th {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border: none;
-            font-weight: 600;
-            color: var(--text-primary);
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            border-top: none;
             padding: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.8125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .table tbody td {
             padding: 1rem;
-            border-color: #f1f5f9;
+            border-color: var(--gray-100);
             vertical-align: middle;
         }
 
         .table tbody tr:hover {
-            background: #f8fafc;
-            transform: scale(1.01);
-            transition: all 0.2s ease;
+            background: var(--gray-50);
         }
 
+        /* Badges */
         .badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
             font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .badge.bg-warning { 
-            background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+        .badge.bg-warning {
+            background-color: #fef3c7 !important;
             color: #92400e !important;
         }
-        .badge.bg-info { 
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe) !important;
+
+        .badge.bg-info {
+            background-color: #dbeafe !important;
             color: #1e40af !important;
         }
-        .badge.bg-success { 
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0) !important;
-            color: #065f46 !important;
+
+        .badge.bg-success {
+            background-color: #dcfce7 !important;
+            color: #166534 !important;
         }
 
-        .btn-group .btn {
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            margin: 0 2px;
+            border: 1px solid transparent;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-secondary {
+            background: transparent;
+            color: var(--gray-600);
+            border-color: var(--gray-300);
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--gray-50);
+            color: var(--gray-700);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        /* Form Styles */
         .form-control, .form-select {
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            transition: all 0.3s ease;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            outline: none;
         }
 
+        .form-label {
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        /* Alerts */
         .alert {
-            border: none;
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
         }
 
         .alert-warning {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            background: #fef3c7;
             color: #92400e;
+            border-color: #fcd34d;
         }
 
         .alert-success {
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            color: #065f46;
+            background: #dcfce7;
+            color: #166534;
+            border-color: #bbf7d0;
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, #fecaca, #f87171);
-            color: #7f1d1d;
+            background: #fecaca;
+            color: #991b1b;
+            border-color: #f87171;
         }
 
-        @media (max-width: 768px) {
-            .sidebar { 
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .main-content { 
-                margin-left: 0;
-                padding: 1rem;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+        .alert-dismissible .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            opacity: 0.5;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
+            padding: 4rem 2rem;
+            color: var(--gray-500);
         }
 
         .empty-state i {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
-            opacity: 0.5;
+            color: var(--gray-400);
+        }
+
+        .empty-state h4 {
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="text-center mb-4">
-            <h5><i class="fas fa-gavel me-2"></i>SIMAK PTUN</h5>
-            <small class="text-muted">Banjarmasin</small>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.php" class="sidebar-brand">
+                <i class="fas fa-gavel"></i>
+                SIMAK PTUN
+            </a>
+            <div class="sidebar-subtitle">
+                Pengadilan Tata Usaha Negara<br>Banjarmasin
+            </div>
         </div>
         
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" href="../../index.php">
-                    <i class="fas fa-home me-2"></i>Dashboard
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="../../index.php" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="../surat-masuk/">
-                    <i class="fas fa-inbox me-2"></i>Surat Masuk
+            </div>
+            <div class="nav-item">
+                <a href="../surat-masuk/" class="nav-link active">
+                    <i class="fas fa-inbox"></i>
+                    Surat Masuk
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../surat-keluar/">
-                    <i class="fas fa-paper-plane me-2"></i>Surat Keluar
+            </div>
+            <div class="nav-item">
+                <a href="../surat-keluar/" class="nav-link">
+                    <i class="fas fa-paper-plane"></i>
+                    Surat Keluar
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../users/">
-                    <i class="fas fa-users me-2"></i>Manajemen User
+            </div>
+            <div class="nav-item">
+                <a href="../users/" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Manajemen User
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../../auth/logout.php">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </div>
+            <div class="nav-item">
+                <a href="../reports/" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Laporan
                 </a>
-            </li>
-        </ul>
-    </nav>
+            </div>
+            <div class="nav-item">
+                <a href="../settings/" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Pengaturan
+                </a>
+            </div>
+            <div class="nav-item" style="margin-top: 2rem;">
+                <a href="../../auth/logout.php" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Flash Messages -->
-        <?php if ($flash): ?>
-            <div class="alert alert-<?= $flash['type'] === 'danger' ? 'danger' : 'success' ?> alert-dismissible fade show">
-                <i class="fas fa-<?= $flash['type'] === 'danger' ? 'exclamation-triangle' : 'check-circle' ?> me-2"></i>
-                <?= htmlspecialchars($flash['message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="header-title">Surat Masuk</h1>
+                <p class="header-subtitle">Kelola semua surat masuk di Pengadilan Tata Usaha Negara</p>
             </div>
-        <?php endif; ?>
+            <div class="header-actions">
+                <a href="tambah.php" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Tambah Surat Masuk
+                </a>
+            </div>
+        </header>
 
-        <!-- Database Warning -->
-        <?php if (!$db_available): ?>
-            <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                <strong>Mode Demo:</strong> Database tidak terhubung. Menampilkan data contoh.
-            </div>
-        <?php endif; ?>
+        <!-- Content -->
+        <div class="content">
+            <!-- Flash Messages -->
+            <?php if ($flash): ?>
+                <div class="alert alert-<?= $flash['type'] === 'danger' ? 'danger' : 'success' ?> alert-dismissible fade show fade-in">
+                    <i class="fas fa-<?= $flash['type'] === 'danger' ? 'exclamation-triangle' : 'check-circle' ?> me-2"></i>
+                    <?= htmlspecialchars($flash['message']) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="page-title">
-                        <i class="fas fa-inbox me-3"></i>Surat Masuk
-                    </h1>
-                    <p class="mb-0 opacity-90">
-                        Kelola semua surat masuk di Pengadilan Tata Usaha Negara Banjarmasin
-                    </p>
+            <!-- Database Warning -->
+            <?php if (!$db_available): ?>
+                <div class="alert alert-warning alert-dismissible fade show fade-in">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Mode Demo:</strong> Database tidak terhubung. Menampilkan data contoh.
                 </div>
-                <div>
-                    <a href="tambah.php" class="btn btn-light btn-lg">
-                        <i class="fas fa-plus me-2"></i>Tambah Surat Masuk
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Stats Summary -->
-        <div class="stats-grid">
-            <div class="stat-card warning">
-                <div class="stat-icon warning">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-content">
-                    <h3><?= getTotalSuratMasuk('pending') ?></h3>
-                    <p class="mb-0 text-muted">Pending</p>
-                </div>
-            </div>
-            
-            <div class="stat-card info">
-                <div class="stat-icon info">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <div class="stat-content">
-                    <h3><?= getTotalSuratMasuk('diproses') ?></h3>
-                    <p class="mb-0 text-muted">Diproses</p>
-                </div>
-            </div>
-            
-            <div class="stat-card success">
-                <div class="stat-icon success">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3><?= getTotalSuratMasuk('selesai') ?></h3>
-                    <p class="mb-0 text-muted">Selesai</p>
-                </div>
-            </div>
-            
-            <div class="stat-card primary">
-                <div class="stat-icon primary">
-                    <i class="fas fa-inbox"></i>
-                </div>
-                <div class="stat-content">
-                    <h3><?= getTotalSuratMasuk() ?></h3>
-                    <p class="mb-0 text-muted">Total</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Filters -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="GET" class="row align-items-end g-3">
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Status</label>
-                        <select name="status" class="form-select">
-                            <option value="">Semua Status</option>
-                            <option value="pending" <?= ($_GET['status'] ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option>
-                            <option value="diproses" <?= ($_GET['status'] ?? '') === 'diproses' ? 'selected' : '' ?>>Diproses</option>
-                            <option value="selesai" <?= ($_GET['status'] ?? '') === 'selesai' ? 'selected' : '' ?>>Selesai</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Dari Tanggal</label>
-                        <input type="date" name="from_date" class="form-control" value="<?= $_GET['from_date'] ?? '' ?>">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Sampai Tanggal</label>
-                        <input type="date" name="to_date" class="form-control" value="<?= $_GET['to_date'] ?? '' ?>">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Pencarian</label>
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" 
-                                   placeholder="Nomor surat, pengirim..." 
-                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            <a href="index.php" class="btn btn-outline-secondary">
-                                <i class="fas fa-times"></i>
-                            </a>
+            <?php endif; ?>
+
+            <!-- Statistics -->
+            <div class="stats-grid fade-in">
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
                         </div>
                     </div>
-                </form>
+                    <div class="stat-number"><?= getTotalSuratMasuk('pending') ?></div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-header">
+                        <div class="stat-icon info">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number"><?= getTotalSuratMasuk('diproses') ?></div>
+                    <div class="stat-label">Diproses</div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number"><?= getTotalSuratMasuk('selesai') ?></div>
+                    <div class="stat-label">Selesai</div>
+                </div>
+                
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number"><?= getTotalSuratMasuk() ?></div>
+                    <div class="stat-label">Total</div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Data Table -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-list me-2"></i>Daftar Surat Masuk
-                    <span class="badge bg-primary ms-2"><?= number_format($total_records) ?> surat</span>
-                </h5>
+
+            <!-- Filters -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <i class="fas fa-filter me-2"></i>Filter & Pencarian
+                </div>
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="">Semua Status</option>
+                                <option value="pending" <?= ($_GET['status'] ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option>
+                                <option value="diproses" <?= ($_GET['status'] ?? '') === 'diproses' ? 'selected' : '' ?>>Diproses</option>
+                                <option value="selesai" <?= ($_GET['status'] ?? '') === 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Dari Tanggal</label>
+                            <input type="date" name="from_date" class="form-control" value="<?= $_GET['from_date'] ?? '' ?>">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Sampai Tanggal</label>
+                            <input type="date" name="to_date" class="form-control" value="<?= $_GET['to_date'] ?? '' ?>">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Pencarian</label>
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Nomor surat, pengirim..." 
+                                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <a href="index.php" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="card-body p-0">
+
+            <!-- Data Table -->
+            <div class="table-container fade-in">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-list me-2"></i>Daftar Surat Masuk
+                            <span class="badge bg-primary ms-2"><?= number_format($total_records) ?> surat</span>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm me-2">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-print"></i>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <?php if (empty($surat_masuk)): ?>
                     <div class="empty-state">
                         <i class="fas fa-inbox"></i>
-                        <h4 class="mt-3">Tidak Ada Surat Masuk</h4>
+                        <h4>Tidak Ada Surat Masuk</h4>
                         <p class="text-muted">Belum ada surat masuk yang tercatat dalam sistem</p>
                         <a href="tambah.php" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Tambah Surat Masuk Pertama
+                            <i class="fas fa-plus"></i>
+                            Tambah Surat Masuk Pertama
                         </a>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table mb-0">
+                        <table class="table">
                             <thead>
                                 <tr>
-                                    <th>No. Surat</th>
-                                    <th>Tanggal Diterima</th>
-                                    <th>Pengirim</th>
-                                    <th>Perihal</th>
-                                    <th>Status</th>
-                                    <th>File</th>
-                                    <th>Aksi</th>
+                                    <th style="width: 15%;">No. Surat</th>
+                                    <th style="width: 15%;">Tanggal</th>
+                                    <th style="width: 20%;">Pengirim</th>
+                                    <th style="width: 25%;">Perihal</th>
+                                    <th style="width: 10%;">Status</th>
+                                    <th style="width: 8%;">File</th>
+                                    <th style="width: 7%;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($surat_masuk as $surat): ?>
                                     <tr>
                                         <td>
-                                            <strong><?= htmlspecialchars($surat['nomor_surat']) ?></strong>
+                                            <div class="fw-semibold text-primary"><?= htmlspecialchars($surat['nomor_surat']) ?></div>
                                             <?php if (!empty($surat['tanggal_surat'])): ?>
-                                                <small class="d-block text-muted">
+                                                <small class="text-muted">
                                                     Tgl Surat: <?= formatTanggal($surat['tanggal_surat']) ?>
                                                 </small>
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?= formatTanggal($surat['tanggal_diterima']) ?>
-                                            <small class="d-block text-muted">
+                                            <div class="fw-medium"><?= formatTanggal($surat['tanggal_diterima']) ?></div>
+                                            <small class="text-muted">
                                                 oleh <?= htmlspecialchars($surat['input_by']) ?>
                                             </small>
                                         </td>
-                                        <td><?= htmlspecialchars($surat['pengirim']) ?></td>
                                         <td>
-                                            <?= htmlspecialchars(substr($surat['perihal'], 0, 50)) ?>
-                                            <?= strlen($surat['perihal']) > 50 ? '...' : '' ?>
+                                            <div class="fw-medium"><?= htmlspecialchars($surat['pengirim']) ?></div>
                                         </td>
                                         <td>
-                                            <?= getStatusBadge($surat['status'], 'surat_masuk') ?>
+                                            <div class="text-wrap">
+                                                <?= htmlspecialchars(substr($surat['perihal'], 0, 60)) ?>
+                                                <?= strlen($surat['perihal']) > 60 ? '...' : '' ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $badge_class = 'bg-warning';
+                                            if ($surat['status'] === 'diproses') $badge_class = 'bg-info';
+                                            if ($surat['status'] === 'selesai') $badge_class = 'bg-success';
+                                            ?>
+                                            <span class="badge <?= $badge_class ?>">
+                                                <?= ucfirst($surat['status']) ?>
+                                            </span>
                                         </td>
                                         <td>
                                             <?php if (!empty($surat['file_surat'])): ?>
-                                                <a href="<?= UPLOAD_URL . $surat['file_surat'] ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-file-pdf"></i> Lihat
+                                                <a href="<?= UPLOAD_URL . $surat['file_surat'] ?>" target="_blank" 
+                                                   class="btn btn-outline-primary btn-sm" title="Lihat File">
+                                                    <i class="fas fa-file-pdf"></i>
                                                 </a>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <div class="btn-group">
+                                            <div class="btn-group" role="group">
                                                 <a href="detail.php?id=<?= $surat['id'] ?>" 
-                                                   class="btn btn-sm btn-info" title="Detail">
+                                                   class="btn btn-info btn-sm" title="Detail">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="edit.php?id=<?= $surat['id'] ?>" 
-                                                   class="btn btn-sm btn-warning" title="Edit">
+                                                   class="btn btn-warning btn-sm" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <?php if ($db_available): ?>
                                                     <a href="javascript:void(0)" 
-                                                       onclick="confirmDelete('?action=delete&id=<?= $surat['id'] ?>', 'Apakah Anda yakin ingin menghapus surat ini?')"
-                                                       class="btn btn-sm btn-danger" title="Hapus">
+                                                       onclick="confirmDelete('?action=delete&id=<?= $surat['id'] ?>')"
+                                                       class="btn btn-danger btn-sm" title="Hapus">
                                                         <i class="fas fa-trash"></i>
                                                     </a>
                                                 <?php endif; ?>
@@ -716,33 +981,15 @@ $flash = getFlashMessage();
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function confirmDelete(url, message) {
-            if (confirm(message)) {
+        function confirmDelete(url) {
+            if (confirm('Apakah Anda yakin ingin menghapus surat ini?')) {
                 window.location.href = url;
             }
         }
 
-        // Add smooth loading animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.stat-card, .card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        });
-
-        // Mobile sidebar toggle
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' ? 'translateX(-100%)' : 'translateX(0px)';
-        }
+        console.log('Surat Masuk page loaded successfully');
     </script>
 </body>
 </html>

@@ -727,3 +727,17 @@ body {
         font-size: 0.75rem;
     }
 }
+/* Tambahkan di bagian CSS */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent automatic scrolling */
+body {
+    overflow-x: hidden;
+}
+
+/* Fix anchor links */
+a[href="#"] {
+    cursor: pointer;
+}

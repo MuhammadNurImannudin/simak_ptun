@@ -349,3 +349,32 @@ window.SimakPTUN = {
     showModal,
     hideModal
 };
+// Tambahkan di bagian akhir JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Prevent form auto-scroll
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            // Let form submit normally but prevent auto-scroll
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+    });
+
+    // Fix anchor links
+    const anchorLinks = document.querySelectorAll('a[href="#"]');
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+
+    // Fix button clicks
+    const buttons = document.querySelectorAll('button[onclick]');
+    buttons.forEach(button => {
+        const originalOnclick = button.getAttribute('onclick');
+        button.setAttribute('onclick', originalOnclick + '; return false;');
+    });
+});
