@@ -1,11 +1,8 @@
 <?php
-// includes/sidebar.php
-
-// Determine current page for active menu
+// includes/sidebar.php - Updated dengan Logo PTUN Animasi
 $current_page = basename($_SERVER['PHP_SELF'], '.php');
 $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 
-// Function to check if menu is active
 function isActive($page, $directory = '') {
     global $current_page, $current_dir;
     
@@ -18,12 +15,17 @@ function isActive($page, $directory = '') {
 }
 ?>
 
-<!-- Sidebar -->
+<!-- Enhanced Sidebar dengan Logo PTUN -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <a href="<?= APP_URL ?>index.php" class="logo">
-            <img src="<?= APP_URL ?>assets/img/logo-ptun.png" alt="Logo PTUN" 
-                 onerror="this.style.display='none'">
+            <div class="logo-container">
+                <img src="<?= APP_URL ?>assets/img/logo-ptun.png" 
+                     alt="Logo PTUN Banjarmasin" 
+                     class="logo-ptun"
+                     onerror="this.style.display='none'">
+                <div class="logo-pulse-ring"></div>
+            </div>
             <div class="logo-text">
                 <h4><?= APP_NAME ?></h4>
                 <div class="subtitle"><?= APP_SUBTITLE ?></div>
@@ -53,13 +55,17 @@ function isActive($page, $directory = '') {
                     <i class="fas fa-inbox"></i>
                     <span>Surat Masuk</span>
                     <?php
-                    $pending_count = getTotalSuratMasuk('pending');
-                    if ($pending_count > 0):
+                    if (function_exists('getTotalSuratMasuk')) {
+                        $pending_count = getTotalSuratMasuk('pending');
+                        if ($pending_count > 0):
                     ?>
                         <span class="badge badge-warning" style="margin-left: auto; font-size: 0.7rem;">
                             <?= $pending_count ?>
                         </span>
-                    <?php endif; ?>
+                    <?php 
+                        endif;
+                    }
+                    ?>
                 </a>
             </li>
             
@@ -70,115 +76,71 @@ function isActive($page, $directory = '') {
                     <i class="fas fa-paper-plane"></i>
                     <span>Surat Keluar</span>
                     <?php
-                    $draft_count = getTotalSuratKeluar('draft');
-                    if ($draft_count > 0):
+                    if (function_exists('getTotalSuratKeluar')) {
+                        $draft_count = getTotalSuratKeluar('draft');
+                        if ($draft_count > 0):
                     ?>
                         <span class="badge badge-info" style="margin-left: auto; font-size: 0.7rem;">
                             <?= $draft_count ?>
                         </span>
-                    <?php endif; ?>
+                    <?php 
+                        endif;
+                    }
+                    ?>
                 </a>
             </li>
             
             <!-- Divider -->
             <li class="nav-divider" style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></li>
             
-            <!-- Reports Section -->
-            <li class="nav-item">
-                <div class="nav-section-title" style="padding: 0.5rem 1.5rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
-                    <span>Laporan</span>
+            <!-- REPORTS DROPDOWN SECTION -->
+            <li class="nav-item nav-dropdown">
+                <div class="nav-link nav-dropdown-toggle <?= isActive('', 'reports') ? 'active' : '' ?>" onclick="toggleReportsDropdown(this)">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Laporan</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow" style="margin-left: auto; transition: transform 0.3s ease;"></i>
+                </div>
+                <div class="nav-dropdown-menu" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.2); border-radius: 8px; margin: 0.25rem 0.75rem;">
+                    <a href="<?= APP_URL ?>pages/reports/index.php" 
+                       class="nav-dropdown-item <?= isActive('index', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard Laporan</span>
+                    </a>
+                    <a href="<?= APP_URL ?>pages/reports/laporan-bulanan.php" 
+                       class="nav-dropdown-item <?= isActive('laporan-bulanan', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Laporan Bulanan</span>
+                    </a>
+                    <a href="<?= APP_URL ?>pages/reports/laporan-tahunan.php" 
+                       class="nav-dropdown-item <?= isActive('laporan-tahunan', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-calendar"></i>
+                        <span>Laporan Tahunan</span>
+                    </a>
+                    <a href="<?= APP_URL ?>pages/reports/statistik-surat.php" 
+                       class="nav-dropdown-item <?= isActive('statistik-surat', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Statistik Surat</span>
+                    </a>
+                    <a href="<?= APP_URL ?>pages/reports/rekapitulasi.php" 
+                       class="nav-dropdown-item <?= isActive('rekapitulasi', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Rekapitulasi</span>
+                    </a>
+                    <a href="<?= APP_URL ?>pages/reports/laporan-disposisi.php" 
+                       class="nav-dropdown-item <?= isActive('laporan-disposisi', 'reports') ? 'active' : '' ?>">
+                        <i class="fas fa-route"></i>
+                        <span>Laporan Disposisi</span>
+                    </a>
                 </div>
             </li>
             
-            <!-- Laporan Bulanan -->
-            <li class="nav-item">
-                <a href="<?= APP_URL ?>pages/reports/laporan-bulanan.php" 
-                   class="nav-link <?= isActive('laporan-bulanan') ? 'active' : '' ?>">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Laporan Bulanan</span>
-                </a>
-            </li>
-            
-            <!-- Laporan Tahunan -->
-            <li class="nav-item">
-                <a href="<?= APP_URL ?>pages/reports/laporan-tahunan.php" 
-                   class="nav-link <?= isActive('laporan-tahunan') ? 'active' : '' ?>">
-                    <i class="fas fa-calendar"></i>
-                    <span>Laporan Tahunan</span>
-                </a>
-            </li>
-            
-            <!-- Statistik Surat -->
-            <li class="nav-item">
-                <a href="<?= APP_URL ?>pages/reports/statistik-surat.php" 
-                   class="nav-link <?= isActive('statistik-surat') ? 'active' : '' ?>">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Statistik Surat</span>
-                </a>
-            </li>
-            
-            <!-- Rekapitulasi -->
-            <li class="nav-item">
-                <a href="<?= APP_URL ?>pages/reports/rekapitulasi.php" 
-                   class="nav-link <?= isActive('rekapitulasi') ? 'active' : '' ?>">
-                    <i class="fas fa-file-excel"></i>
-                    <span>Rekapitulasi</span>
-                </a>
-            </li>
-            
-            <!-- Laporan Disposisi -->
-            <li class="nav-item">
-                <a href="<?= APP_URL ?>pages/reports/laporan-disposisi.php" 
-                   class="nav-link <?= isActive('laporan-disposisi') ? 'active' : '' ?>">
-                    <i class="fas fa-route"></i>
-                    <span>Laporan Disposisi</span>
-                </a>
-            </li>
-            
-            <!-- Additional Reports (for Skripsi - 8 reports total) -->
-            <?php if (isAdmin()): ?>
+            <!-- Settings Section (Admin Only) -->
+            <?php if (function_exists('isAdmin') && isAdmin()): ?>
                 <!-- Divider -->
                 <li class="nav-divider" style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></li>
                 
-                <li class="nav-item">
-                    <div class="nav-section-title" style="padding: 0.5rem 1.5rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
-                        <span>Laporan Lanjutan</span>
-                    </div>
-                </li>
-                
-                <!-- Analisis Trend -->
-                <li class="nav-item">
-                    <a href="<?= APP_URL ?>pages/reports/analisis-trend.php" 
-                       class="nav-link <?= isActive('analisis-trend') ? 'active' : '' ?>">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Analisis Trend</span>
-                    </a>
-                </li>
-                
-                <!-- Performa Penanganan -->
-                <li class="nav-item">
-                    <a href="<?= APP_URL ?>pages/reports/performa-penanganan.php" 
-                       class="nav-link <?= isActive('performa-penanganan') ? 'active' : '' ?>">
-                        <i class="fas fa-stopwatch"></i>
-                        <span>Performa Penanganan</span>
-                    </a>
-                </li>
-                
-                <!-- Dashboard Eksekutif -->
-                <li class="nav-item">
-                    <a href="<?= APP_URL ?>pages/reports/dashboard-eksekutif.php" 
-                       class="nav-link <?= isActive('dashboard-eksekutif') ? 'active' : '' ?>">
-                        <i class="fas fa-chart-pie"></i>
-                        <span>Dashboard Eksekutif</span>
-                    </a>
-                </li>
-            <?php endif; ?>
-            
-            <!-- Divider -->
-            <li class="nav-divider" style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></li>
-            
-            <!-- Settings Section (Admin Only) -->
-            <?php if (isAdmin()): ?>
                 <li class="nav-item">
                     <div class="nav-section-title" style="padding: 0.5rem 1.5rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
                         <span>Pengaturan</span>
@@ -202,10 +164,10 @@ function isActive($page, $directory = '') {
                         <span>Pengaturan Sistem</span>
                     </a>
                 </li>
-                
-                <!-- Divider -->
-                <li class="nav-divider" style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></li>
             <?php endif; ?>
+            
+            <!-- Divider -->
+            <li class="nav-divider" style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></li>
             
             <!-- Profile -->
             <li class="nav-item">
@@ -250,7 +212,7 @@ function isActive($page, $directory = '') {
         <div style="text-align: center; color: rgba(255,255,255,0.6); font-size: 0.75rem;">
             <div style="margin-bottom: 0.25rem;">
                 <i class="fas fa-user"></i>
-                <span class="sidebar-expanded-only"><?= htmlspecialchars($_SESSION['nama_lengkap']) ?></span>
+                <span class="sidebar-expanded-only"><?= htmlspecialchars($_SESSION['nama_lengkap'] ?? 'User') ?></span>
             </div>
             <div>
                 <i class="fas fa-clock"></i>
@@ -261,41 +223,168 @@ function isActive($page, $directory = '') {
 </aside>
 
 <style>
-/* Sidebar responsive styles */
-.sidebar-collapsed .sidebar-expanded-only {
-    display: none !important;
-}
-
-.sidebar:not(.collapsed) .sidebar-collapsed-only {
-    display: none !important;
-}
-
-.sidebar.collapsed .sidebar-collapsed-only {
-    display: block !important;
-}
-
-.nav-section-title span {
-    transition: opacity 0.3s ease;
-}
-
-.sidebar.collapsed .nav-section-title {
-    display: none;
-}
-
-.sidebar.collapsed .nav-divider {
-    margin: 0.25rem 0;
-}
-
-/* Badge positioning */
-.nav-link .badge {
+/* Enhanced Logo Styles untuk Sidebar */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 12px;
     transition: all 0.3s ease;
 }
 
-.sidebar.collapsed .nav-link .badge {
+.logo:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+.logo-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-ptun {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.logo-ptun:hover {
+    transform: scale(1.1) rotateY(10deg);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.logo-pulse-ring {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    transform: scale(0.8);
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    animation: logoPulse 2s ease-out infinite;
+    z-index: 1;
+}
+
+.logo-text h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.logo-text .subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.2;
+    margin-top: 0.25rem;
+}
+
+/* Dropdown Styles */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.nav-dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-dropdown-toggle.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.nav-dropdown.show .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown.show .nav-dropdown-menu {
+    max-height: 400px !important;
+    padding: 0.5rem 0;
+}
+
+.nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin: 0.125rem 0.5rem;
+}
+
+.nav-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(4px);
+}
+
+.nav-dropdown-item.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.nav-dropdown-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Sidebar collapsed state */
+.sidebar.collapsed .logo-container {
+    justify-content: center;
+}
+
+.sidebar.collapsed .logo-text {
+    display: none;
+}
+
+.sidebar.collapsed .logo-ptun {
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar.collapsed .logo-pulse-ring {
+    width: 50px;
+    height: 50px;
+}
+
+/* Animations */
+@keyframes logoPulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
 }
 
 /* Mobile responsive */
@@ -308,36 +397,28 @@ function isActive($page, $directory = '') {
     .sidebar.show {
         transform: translateX(0);
     }
-    
-    .sidebar-footer {
-        display: none;
-    }
-}
-
-/* Sidebar overlay for mobile */
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: none;
-}
-
-.sidebar-overlay.show {
-    display: block;
-}
-
-@media (max-width: 768px) {
-    .sidebar.show + .sidebar-overlay {
-        display: block;
-    }
 }
 </style>
 
 <script>
+// Toggle Reports Dropdown
+function toggleReportsDropdown(element) {
+    const dropdown = element.closest('.nav-dropdown');
+    dropdown.classList.toggle('show');
+    return false;
+}
+
+// Auto-open reports dropdown if on reports page
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/reports/')) {
+        const reportsDropdown = document.querySelector('.nav-dropdown');
+        if (reportsDropdown) {
+            reportsDropdown.classList.add('show');
+        }
+    }
+});
+
 // Update current time
 function updateTime() {
     const now = new Date();
@@ -351,70 +432,27 @@ function updateTime() {
     }
 }
 
-// Update time every minute
 updateTime();
 setInterval(updateTime, 60000);
 
-// Handle sidebar state changes
+// Enhanced logo interaction
 document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
+    const logo = document.querySelector('.logo-ptun');
     
-    // Observer for sidebar class changes
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.attributeName === 'class') {
-                const isCollapsed = sidebar.classList.contains('collapsed');
-                
-                // Toggle expanded/collapsed specific elements
-                const expandedElements = document.querySelectorAll('.sidebar-expanded-only');
-                const collapsedElements = document.querySelectorAll('.sidebar-collapsed-only');
-                
-                expandedElements.forEach(el => {
-                    el.style.display = isCollapsed ? 'none' : '';
-                });
-                
-                collapsedElements.forEach(el => {
-                    el.style.display = isCollapsed ? 'block' : 'none';
-                });
-            }
+    if (logo) {
+        // Add click animation
+        logo.addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = '';
+            }, 100);
+            
+            // Add temporary spin effect
+            this.style.transform = 'scale(1.2) rotateY(360deg)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 600);
         });
-    });
-    
-    observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
-});
-
-// Mobile sidebar toggle
-function toggleMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.querySelector('.sidebar-overlay');
-    
-    sidebar.classList.toggle('show');
-    if (overlay) {
-        overlay.classList.toggle('show');
-    }
-}
-
-// Close mobile sidebar when clicking overlay
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('sidebar-overlay')) {
-        toggleMobileSidebar();
     }
 });
-
-// Add mobile toggle button for smaller screens
-if (window.innerWidth <= 768) {
-    const headerLeft = document.querySelector('.header-left');
-    if (headerLeft) {
-        const mobileToggle = document.createElement('button');
-        mobileToggle.className = 'mobile-toggle';
-        mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        mobileToggle.onclick = toggleMobileSidebar;
-        headerLeft.insertBefore(mobileToggle, headerLeft.firstChild);
-    }
-    
-    // Add overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'sidebar-overlay';
-    document.body.appendChild(overlay);
-}
 </script>

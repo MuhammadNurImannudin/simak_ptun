@@ -741,3 +741,43 @@ body {
 a[href="#"] {
     cursor: pointer;
 }
+
+/* Logo PTUN Enhancement */
+.logo-ptun-enhanced {
+    position: relative;
+    display: inline-block;
+}
+
+.logo-ptun-enhanced::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: logoAura 3s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes logoAura {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* Enhanced Sidebar Logo Integration */
+.sidebar .logo img.logo-ptun {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar .logo:hover img.logo-ptun {
+    transform: scale(1.1) rotateY(15deg);
+    filter: brightness(1.1) drop-shadow(0 5px 15px rgba(255,215,0,0.3));
+}
